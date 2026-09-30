@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peak Beacom | Software, Hardware & Music</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Inter for a clean, modern aesthetic -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,295 +22,443 @@
                             dark: '#0a0f16',
                             card: '#111823',
                             border: '#1f2937',
-                            accent1: '#10b981', // Emerald / Neon Green
+                            accent1: '#10b981', // Emerald
                             accent2: '#3b82f6', // Tech Blue
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
             }
         }
     </script>
+
     <style>
         body {
             background-color: #0a0f16;
             color: #f3f4f6;
             overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0f16;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #374151;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #10b981;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0f16; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
 
-        /* Intersection Observer Animation Classes */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Ambient Glow Effect */
+        /* Ambient Background */
         .glow-bg {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, rgba(10,15,22,0) 70%);
+            position: fixed;
+            width: 80vw;
+            height: 80vw;
+            max-width: 800px;
+            max-height: 800px;
+            background: radial-gradient(circle, rgba(16,185,129,0.03) 0%, rgba(10,15,22,0) 70%);
             border-radius: 50%;
             pointer-events: none;
             z-index: -1;
+            top: -20%;
+            left: -10%;
+        }
+        .glow-bg-2 {
+            position: fixed;
+            width: 60vw;
+            height: 60vw;
+            max-width: 600px;
+            max-height: 600px;
+            background: radial-gradient(circle, rgba(59,130,246,0.03) 0%, rgba(10,15,22,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            bottom: -10%;
+            right: -10%;
+        }
+
+        /* SPA Section Handling */
+        .page-section {
+            display: none; /* Hidden by default */
+            flex-grow: 1;
+            padding-top: 6rem; /* Account for fixed navbar */
+            padding-bottom: 4rem;
+        }
+        .page-section.active {
+            display: flex;
+            flex-direction: column;
         }
     </style>
 </head>
 <body class="antialiased relative">
 
-    <!-- Ambient background glows -->
-    <div class="glow-bg top-0 left-0"></div>
-    <div class="glow-bg bottom-0 right-0"></div>
+    <div class="glow-bg"></div>
+    <div class="glow-bg-2"></div>
 
     <nav class="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-md bg-brand-dark/80 border-b border-brand-border">
         <div class="max-w-6xl mx-auto px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo / Name -->
                 <div class="flex-shrink-0">
-                    <a href="#home" class="text-xl font-bold tracking-tighter">
+                    <button data-target="home" class="nav-btn text-xl font-bold tracking-tighter outline-none">
                         PEAK<span class="text-brand-accent1">BEACOM</span>
-                    </a>
+                    </button>
                 </div>
                 <!-- Desktop Menu -->
                 <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#home" class="hover:text-brand-accent1 transition-colors px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                        <a href="#projects" class="hover:text-brand-accent1 transition-colors px-3 py-2 rounded-md text-sm font-medium">Projects</a>
-                        <a href="#music" class="hover:text-brand-accent1 transition-colors px-3 py-2 rounded-md text-sm font-medium">Music</a>
-                        <a href="#community" class="hover:text-brand-accent1 transition-colors px-3 py-2 rounded-md text-sm font-medium">Community</a>
-                        <a href="#contact" class="hover:text-brand-accent2 transition-colors px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                    <div class="ml-10 flex items-baseline space-x-6 lg:space-x-8">
+                        <button data-target="home" class="nav-btn active-nav hover:text-brand-accent1 transition-colors px-2 py-2 rounded-md text-sm font-medium outline-none">Home</button>
+                        <button data-target="projects" class="nav-btn hover:text-brand-accent1 transition-colors px-2 py-2 rounded-md text-sm font-medium outline-none">Projects</button>
+                        <button data-target="music" class="nav-btn hover:text-brand-accent1 transition-colors px-2 py-2 rounded-md text-sm font-medium outline-none">Music</button>
+                        <button data-target="leadership" class="nav-btn hover:text-brand-accent1 transition-colors px-2 py-2 rounded-md text-sm font-medium outline-none">Leadership</button>
+                        <button data-target="contact" class="nav-btn hover:text-brand-accent2 transition-colors px-2 py-2 rounded-md text-sm font-medium outline-none">Contact</button>
                     </div>
                 </div>
-                <!-- Mobile Menu Button (Visual Only for simplicity, typically requires JS to toggle) -->
-                <div class="md:hidden flex items-center">
-                    <span class="text-xs text-gray-400 uppercase tracking-widest">Menu available on Desktop</span>
+                <!-- Mobile Menu Layout (Simplified flat links for easy access) -->
+                <div class="md:hidden flex space-x-3 overflow-x-auto text-xs font-medium pb-1">
+                     <button data-target="home" class="nav-btn text-brand-accent1 whitespace-nowrap">Home</button>
+                     <button data-target="projects" class="nav-btn whitespace-nowrap">Projects</button>
+                     <button data-target="music" class="nav-btn whitespace-nowrap">Music</button>
+                     <button data-target="leadership" class="nav-btn whitespace-nowrap">Leadership</button>
+                     <button data-target="contact" class="nav-btn whitespace-nowrap">Contact</button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main>
-        <section id="home" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-            <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10">
-                <div class="reveal">
-                    <h2 class="text-brand-accent2 font-semibold tracking-widest uppercase text-sm md:text-base mb-4">
-                        The Maker Space
-                    </h2>
-                    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
-                        Hi, I'm <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-accent1 to-brand-accent2">Peak Beacom</span>.
-                    </h1>
-                    <p class="text-xl md:text-2xl text-gray-300 font-medium mb-8">
-                        Software Developer <span class="text-brand-border mx-2">|</span> Hardware Engineer <span class="text-brand-border mx-2">|</span> Musician
+    <main class="flex-grow flex flex-col w-full">
+        
+        <!-- HOME SECTION -->
+        <section id="home" class="page-section active animate-fade-in items-center justify-center min-h-[80vh]">
+            <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+                <h2 class="text-brand-accent2 font-semibold tracking-widest uppercase text-sm md:text-base mb-4">
+                    The Maker Space
+                </h2>
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-accent1 to-brand-accent2">Peak Beacom</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 font-medium mb-10">
+                    Software Developer <span class="text-brand-border mx-2">|</span> Hardware Engineer <span class="text-brand-border mx-2">|</span> Musician
+                </p>
+                
+                <div class="max-w-3xl mx-auto bg-brand-card/60 border border-brand-border rounded-2xl p-8 shadow-xl backdrop-blur-sm mb-10">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-100">Purpose</h3>
+                    <p class="text-gray-300 leading-relaxed text-lg mb-6 italic">
+                        "To engineer innovative solutions and create compelling experiences by fusing software development, custom circuitry, and musical performance."
+                    </p>
+                    <div class="h-px w-24 bg-brand-border mx-auto mb-6"></div>
+                    <p class="text-gray-400 leading-relaxed">
+                        Grounded in an entrepreneurial mindset driven by the <strong class="text-gray-200">Venture Academy of Leadership and Entrepreneurship (VALE)</strong>, I thrive at the intersection of logical problem-solving and creative execution. I specialize in taking ambitious concepts from the drawing board to reality.
                     </p>
                 </div>
                 
-                <div class="reveal delay-100 max-w-3xl mx-auto bg-brand-card/50 border border-brand-border rounded-2xl p-8 shadow-2xl backdrop-blur-sm">
-                    <p class="text-gray-400 leading-relaxed text-lg md:text-xl">
-                        "I build applications, wire hardware, and write music. Grounded in the entrepreneurial mindset of the <span class="text-gray-200 font-medium">Venture Academy of Leadership and Entrepreneurship (VALE)</span>, my work thrives at the intersection of logical problem-solving and creative execution. I specialize in taking ambitious concepts from the drawing board to reality."
-                    </p>
-                </div>
-                
-                <div class="reveal delay-200 mt-12 flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="#projects" class="bg-brand-accent1 hover:bg-brand-accent1/90 text-brand-dark font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-                        Explore My Work
-                    </a>
-                    <a href="#contact" class="bg-transparent border border-brand-border hover:border-gray-500 text-gray-300 font-semibold px-8 py-3 rounded-full transition-all duration-300">
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button data-target="projects" class="nav-btn bg-brand-accent1 hover:bg-brand-accent1/90 text-brand-dark font-semibold px-8 py-3 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                        View Projects
+                    </button>
+                    <button data-target="contact" class="nav-btn bg-transparent border border-brand-border hover:border-gray-400 text-gray-300 font-semibold px-8 py-3 rounded-full transition-all duration-300">
                         Get In Touch
-                    </a>
+                    </button>
                 </div>
             </div>
         </section>
 
-        <section id="projects" class="py-24 bg-brand-card/20 relative border-t border-brand-border/50">
-            <div class="max-w-6xl mx-auto px-6 lg:px-8">
-                <div class="reveal mb-16">
+        <!-- PROJECTS SECTION -->
+        <section id="projects" class="page-section">
+            <div class="max-w-6xl mx-auto px-6 lg:px-8 w-full">
+                <div class="mb-12 text-center md:text-left">
                     <h2 class="text-3xl md:text-4xl font-bold mb-4">Engineering & Software</h2>
-                    <div class="h-1 w-20 bg-gradient-to-r from-brand-accent1 to-brand-accent2 rounded-full"></div>
+                    <div class="h-1 w-20 bg-gradient-to-r from-brand-accent1 to-brand-accent2 rounded-full mx-auto md:mx-0"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Meany Chess -->
-                    <div class="reveal delay-100 group bg-brand-card border border-brand-border p-8 rounded-2xl hover:border-brand-accent2/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(59,130,246,0.15)] relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-accent2/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-brand-accent2/10"></div>
-                        <div class="w-12 h-12 bg-brand-dark rounded-xl flex items-center justify-center mb-6 border border-brand-border group-hover:border-brand-accent2/30 transition-colors">
-                            <!-- Chess Knight SVG -->
-                            <svg class="w-6 h-6 text-brand-accent2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Project 1 -->
+                    <div class="bg-brand-card border border-brand-border p-6 rounded-2xl hover:border-brand-accent2/50 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-brand-dark rounded-xl flex items-center justify-center mb-5 border border-brand-border text-brand-accent2 group-hover:bg-brand-accent2/10 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-3 text-gray-100">Meany Chess</h3>
-                        <p class="text-gray-400 leading-relaxed mb-6">
-                            A custom chess application built from the ground up. Focused on implementing secure account verification, robust system testing, and complex backend logic.
+                        <h3 class="text-xl font-bold mb-3 text-gray-100">Meany Chess</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            A custom chess application built from scratch. Focused on implementing secure account verification, rigorous system testing, and architecting complex backend logic to handle game states.
                         </p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded-full border border-brand-border">Software Dev</span>
-                            <span class="px-3 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded-full border border-brand-border">Backend Logic</span>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="px-2 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded border border-brand-border">Backend Logic</span>
+                            <span class="px-2 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded border border-brand-border">Auth</span>
                         </div>
                     </div>
 
-                    <!-- Engineering Certification -->
-                    <div class="reveal delay-200 group bg-brand-card border border-brand-border p-8 rounded-2xl hover:border-brand-accent1/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(16,185,129,0.15)] relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-accent1/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-brand-accent1/10"></div>
-                        <div class="w-12 h-12 bg-brand-dark rounded-xl flex items-center justify-center mb-6 border border-brand-border group-hover:border-brand-accent1/30 transition-colors">
-                            <!-- Circuit/Chip SVG -->
-                            <svg class="w-6 h-6 text-brand-accent1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                    <!-- Project 2 -->
+                    <div class="bg-brand-card border border-brand-border p-6 rounded-2xl hover:border-brand-accent1/50 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-brand-dark rounded-xl flex items-center justify-center mb-5 border border-brand-border text-brand-accent1 group-hover:bg-brand-accent1/10 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-3 text-gray-100">Engineering Certification</h3>
-                        <p class="text-gray-400 leading-relaxed mb-6">
-                            Achieved through rigorous coursework involving hands-on circuitry, robotics, and applied hardware problem-solving. Bridging the gap between physical wiring and digital commands.
+                        <h3 class="text-xl font-bold mb-3 text-gray-100">Engineering Certification</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            Completed through the American Academy program. Focused on applied hardware logic, custom circuitry design, and programming microcontrollers to bridge physical inputs with digital outputs.
                         </p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded-full border border-brand-border">Hardware</span>
-                            <span class="px-3 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded-full border border-brand-border">Circuitry</span>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="px-2 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded border border-brand-border">Circuitry</span>
+                            <span class="px-2 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded border border-brand-border">Microcontrollers</span>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="bg-brand-card border border-brand-border p-6 rounded-2xl hover:border-gray-300/50 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                        <div class="w-12 h-12 bg-brand-dark rounded-xl flex items-center justify-center mb-5 border border-brand-border text-gray-300 group-hover:bg-gray-700/30 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-100">3D Engineering & Automation</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            Utilizing parametric modeling tools like OpenSCAD and Tinkercad Codeblocks alongside Python scripts to programmatically design and 3D print custom functional hardware solutions.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="px-2 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded border border-brand-border">OpenSCAD</span>
+                            <span class="px-2 py-1 text-xs font-medium bg-brand-dark text-gray-300 rounded border border-brand-border">Python</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="music" class="py-24 relative">
-            <div class="max-w-6xl mx-auto px-6 lg:px-8">
-                <div class="reveal grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- MUSIC SECTION -->
+        <section id="music" class="page-section">
+            <div class="max-w-6xl mx-auto px-6 lg:px-8 w-full">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h2 class="text-brand-accent1 font-semibold tracking-widest uppercase text-sm mb-3">Sonic Architecture</h2>
+                        <h2 class="text-brand-accent1 font-semibold tracking-widest uppercase text-sm mb-2">The Sound</h2>
                         <h3 class="text-4xl font-bold mb-6">Unbroken</h3>
-                        <p class="text-xl text-gray-300 mb-6 font-medium">Lead Guitarist & Backing Vocalist</p>
+                        <p class="text-xl text-gray-200 mb-2 font-medium">Lead Guitarist & Backing Vocalist</p>
+                        <div class="flex gap-3 mb-6">
+                            <span class="text-xs text-brand-accent2 border border-brand-accent2/30 bg-brand-accent2/10 px-2 py-1 rounded">Electric Guitar</span>
+                            <span class="text-xs text-brand-accent2 border border-brand-accent2/30 bg-brand-accent2/10 px-2 py-1 rounded">Acoustic Guitar</span>
+                            <span class="text-xs text-brand-accent2 border border-brand-accent2/30 bg-brand-accent2/10 px-2 py-1 rounded">Piano</span>
+                        </div>
                         <p class="text-gray-400 leading-relaxed mb-8">
-                            Fusing creative expression with technical precision. My musical journey involves more than just playing; it includes setting up complex live rigs, organizing dynamic rehearsals, and navigating the digital landscape. We are currently routing our debut tracks for full Spotify distribution.
+                            Fusing creative expression with technical precision. As a core member of the rock band Unbroken, my musical journey involves performing complex arrangements, writing original material, and blending sonic textures. Whether I'm dialing in a heavy guitar tone or arranging piano melodies, music is my ultimate creative outlet.
                         </p>
                         
-                        <!-- Mock Spotify Presave / Listen Button -->
-                        <div class="inline-flex items-center gap-3 bg-[#1DB954] hover:bg-[#1ed760] text-brand-dark font-bold px-6 py-3 rounded-full transition-colors cursor-pointer">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-                            <span>Spotify Launching Soon</span>
+                        <div class="inline-flex flex-col gap-2">
+                            <span class="text-sm text-gray-500 font-medium uppercase tracking-wider">Latest Release</span>
+                            <div class="text-gray-400 text-sm italic border-l-2 border-brand-accent1 pl-3 py-1">
+                                Spotify integration launching soon.
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Decorative Graphic -->
-                    <div class="relative bg-brand-card/50 border border-brand-border rounded-2xl h-80 flex items-center justify-center overflow-hidden">
-                        <!-- Abstract Soundwave visualization -->
-                        <div class="flex items-center gap-1 opacity-50">
-                            <div class="w-3 h-16 bg-brand-accent1 rounded-full animate-[pulse_1s_ease-in-out_infinite]"></div>
-                            <div class="w-3 h-24 bg-brand-accent2 rounded-full animate-[pulse_1.2s_ease-in-out_infinite]"></div>
-                            <div class="w-3 h-32 bg-brand-accent1 rounded-full animate-[pulse_0.8s_ease-in-out_infinite]"></div>
-                            <div class="w-3 h-12 bg-brand-accent2 rounded-full animate-[pulse_1.5s_ease-in-out_infinite]"></div>
-                            <div class="w-3 h-28 bg-brand-accent1 rounded-full animate-[pulse_0.9s_ease-in-out_infinite]"></div>
-                            <div class="w-3 h-20 bg-brand-accent2 rounded-full animate-[pulse_1.1s_ease-in-out_infinite]"></div>
+                    <!-- Spotify Embed Placeholder -->
+                    <div class="bg-brand-card border border-brand-border rounded-xl p-4 shadow-lg flex flex-col items-center justify-center h-80 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#1DB954]/10 to-transparent z-0"></div>
+                        <div class="z-10 flex flex-col items-center text-center">
+                            <svg class="w-16 h-16 text-[#1DB954] mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.6.18-1.2.72-1.38 4.26-1.26 11.28-1.02 15.72 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                            <h4 class="text-lg font-bold text-gray-200 mb-1">Unbroken on Spotify</h4>
+                            <p class="text-sm text-gray-400 max-w-xs">Once our tracks are distributed, this block will feature an interactive Spotify web player.</p>
                         </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-brand-card via-transparent to-transparent"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="community" class="py-24 bg-brand-card/20 border-t border-brand-border/50">
-            <div class="max-w-6xl mx-auto px-6 lg:px-8">
-                <div class="reveal mb-16 text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Community & Leadership</h2>
-                    <p class="text-gray-400 max-w-2xl mx-auto">Applying technological knowledge and organizational skills to foster growth and support within the local community.</p>
+        <!-- LEADERSHIP SECTION -->
+        <section id="leadership" class="page-section">
+            <div class="max-w-4xl mx-auto px-6 lg:px-8 w-full">
+                <div class="mb-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Experience & Volunteering</h2>
+                    <p class="text-gray-400">Applying technical knowledge and discipline to foster community growth.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
                     <!-- Code Ninjas -->
-                    <div class="reveal delay-100 flex gap-6 bg-brand-dark border border-brand-border p-6 rounded-2xl">
-                        <div class="flex-shrink-0 mt-1">
-                            <div class="w-10 h-10 rounded-full bg-brand-accent2/10 flex items-center justify-center border border-brand-accent2/30">
-                                <svg class="w-5 h-5 text-brand-accent2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                            </div>
+                    <div class="bg-brand-card/50 border border-brand-border p-6 rounded-2xl flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="w-12 h-12 rounded-full bg-brand-accent2/10 flex items-center justify-center border border-brand-accent2/30 flex-shrink-0">
+                            <svg class="w-6 h-6 text-brand-accent2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-100 mb-2">Code Ninjas Mentorship</h3>
-                            <div class="inline-block bg-brand-card border border-brand-border px-2 py-1 rounded text-xs text-brand-accent2 font-semibold mb-3">201 Volunteer Hours</div>
-                            <p class="text-gray-400 leading-relaxed text-sm">
-                                Dedicated as a Camp Assistant, guiding young students through hands-on STEM and coding projects. Simplified complex programming concepts to foster an engaging learning environment and inspire the next generation of builders.
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-gray-100">Code Ninjas</h3>
+                                <span class="text-sm font-semibold text-brand-accent1 bg-brand-accent1/10 px-2 py-1 rounded mt-2 sm:mt-0 inline-block">201 Volunteer Hours</span>
+                            </div>
+                            <p class="text-brand-accent2 text-sm font-medium mb-3">Volunteer Camp Assistant</p>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                Guided young students through hands-on STEM, Unity game engine mechanics, and foundational coding projects. Simplified complex programming concepts to cultivate an engaging and collaborative learning environment for the next generation of developers.
                             </p>
                         </div>
                     </div>
 
-                    <!-- YMSL -->
-                    <div class="reveal delay-200 flex gap-6 bg-brand-dark border border-brand-border p-6 rounded-2xl">
-                        <div class="flex-shrink-0 mt-1">
-                            <div class="w-10 h-10 rounded-full bg-brand-accent1/10 flex items-center justify-center border border-brand-accent1/30">
-                                <svg class="w-5 h-5 text-brand-accent1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                            </div>
+                    <!-- Community Service -->
+                    <div class="bg-brand-card/50 border border-brand-border p-6 rounded-2xl flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="w-12 h-12 rounded-full bg-brand-accent1/10 flex items-center justify-center border border-brand-accent1/30 flex-shrink-0">
+                            <svg class="w-6 h-6 text-brand-accent1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-100 mb-2">Young Men's Service League</h3>
-                            <div class="inline-block bg-brand-card border border-brand-border px-2 py-1 rounded text-xs text-brand-accent1 font-semibold mb-3">Active Member</div>
-                            <p class="text-gray-400 leading-relaxed text-sm">
-                                Active participant in local community service, executing high-impact volunteer projects and developing collaborative leadership skills outside the realm of technology.
-                            </p>
+                            <h3 class="text-xl font-bold text-gray-100 mb-2">Community Service & Discipline</h3>
+                            <ul class="space-y-4 mt-4">
+                                <li class="text-sm text-gray-400 leading-relaxed border-l-2 border-brand-border pl-4">
+                                    <strong class="text-gray-200 block mb-1">Young Men's Service League (YMSL)</strong>
+                                    Participated in extensive community outreach and physical volunteering projects, including partnering with Habitat for Humanity to build and improve local infrastructure.
+                                </li>
+                                <li class="text-sm text-gray-400 leading-relaxed border-l-2 border-brand-border pl-4">
+                                    <strong class="text-gray-200 block mb-1">Tiger Lee Taekwondo</strong>
+                                    Cultivated profound personal discipline, respect, and physical endurance through long-term martial arts training.
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="page-section">
+            <div class="max-w-3xl mx-auto px-6 lg:px-8 w-full text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Let's Connect</h2>
+                <p class="text-gray-400 mb-10">Whether you're looking for a software developer, a hardware engineer, or just want to talk music, my inbox is open.</p>
+
+                <div class="bg-brand-card border border-brand-border rounded-2xl p-8 mb-8">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-8 mb-8 text-left">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-brand-accent2/10 p-3 rounded-full text-brand-accent2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase font-semibold">Email</p>
+                                <a href="mailto:beacompeak@gmail.com" class="text-gray-200 hover:text-brand-accent2 font-medium transition-colors">beacompeak@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="bg-brand-accent1/10 p-3 rounded-full text-brand-accent1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase font-semibold">Website</p>
+                                <a href="https://peakbeac.github.io/aboutMe" class="text-gray-200 hover:text-brand-accent1 font-medium transition-colors">peakbeac.github.io/aboutMe</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mock Form -->
+                    <form id="contactForm" class="space-y-4 text-left">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Name</label>
+                                <input type="text" class="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-brand-accent2 transition-colors" placeholder="John Doe" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                                <input type="email" class="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-brand-accent2 transition-colors" placeholder="john@example.com" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Message</label>
+                            <textarea rows="4" class="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2 text-gray-200 focus:outline-none focus:border-brand-accent2 transition-colors resize-none" placeholder="Hello..." required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-gray-100 hover:bg-white text-brand-dark font-bold py-3 rounded-lg transition-colors mt-2">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <footer id="contact" class="bg-brand-dark border-t border-brand-border py-12 text-center relative overflow-hidden">
-        <div class="glow-bg bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 bg-[radial-gradient(circle,rgba(59,130,246,0.05)_0%,rgba(10,15,22,0)_70%)]"></div>
-        <div class="max-w-4xl mx-auto px-6 relative z-10">
-            <h2 class="text-2xl font-bold mb-6">Let's Build Something</h2>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto">
-                Whether it's writing code, soldering circuits, or laying down tracks, I'm always open to new projects and opportunities.
-            </p>
-            <a href="mailto:contact@peakbea.com" class="inline-flex items-center justify-center gap-2 bg-brand-card border border-brand-border hover:border-brand-accent2/50 text-gray-200 font-semibold px-8 py-4 rounded-full transition-all duration-300 mb-16 shadow-lg hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                Contact Me
-            </a>
-            
-            <div class="border-t border-brand-border/50 pt-8 mt-8 flex flex-col items-center justify-center">
-                <div class="flex gap-4 mb-4 text-gray-500">
-                    <!-- Social placeholders -->
-                    <a href="#" class="hover:text-brand-accent2 transition-colors"><span class="sr-only">LinkedIn</span><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
-                    <a href="#" class="hover:text-brand-accent2 transition-colors"><span class="sr-only">GitHub</span><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
-                </div>
-                <p class="text-gray-600 text-sm">
-                    &copy; 2026 Peak Beacom. Built for <a href="https://peakbea.com" class="text-brand-accent1 hover:underline">peakbea.com</a>
-                </p>
-            </div>
+    <footer class="border-t border-brand-border py-6 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 text-center text-sm text-gray-500">
+            &copy; <span id="year"></span> Peak Beacom. Built with HTML, CSS, & JS. Hosted on GitHub Pages.
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Setup Intersection Observer for scroll reveal animations
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.15
-            };
+            // Set current year in footer
+            document.getElementById('year').textContent = new Date().getFullYear();
 
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        // Unobserve once animated to keep it visible
-                        observer.unobserve(entry.target);
+            // SPA Navigation Logic
+            const navButtons = document.querySelectorAll('.nav-btn[data-target]');
+            const sections = document.querySelectorAll('.page-section');
+
+            function navigateTo(targetId) {
+                // 1. Hide all sections and remove animation classes
+                sections.forEach(section => {
+                    section.classList.remove('active', 'animate-fade-in');
+                });
+
+                // 2. Show the target section and trigger animation
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.classList.add('active', 'animate-fade-in');
+                    // Scroll to top of page smoothly
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+
+                // 3. Update styling on navigation buttons
+                navButtons.forEach(btn => {
+                    const btnTarget = btn.getAttribute('data-target');
+                    if (btnTarget === targetId) {
+                        // Desktop active styling
+                        btn.classList.add('text-brand-accent1');
+                        // Mobile active styling (remove brand colors from others)
+                        if(window.innerWidth < 768) {
+                           btn.classList.add('text-brand-accent1');
+                           btn.classList.remove('text-gray-400');
+                        }
+                    } else {
+                        // Desktop inactive styling
+                        btn.classList.remove('text-brand-accent1');
+                        // Mobile inactive styling
+                        if(window.innerWidth < 768) {
+                           btn.classList.remove('text-brand-accent1');
+                           btn.classList.add('text-gray-400');
+                        }
                     }
                 });
-            }, observerOptions);
+            }
 
-            // Target all elements with the 'reveal' class
-            const revealElements = document.querySelectorAll('.reveal');
-            revealElements.forEach(el => observer.observe(el));
+            // Attach click events to all nav buttons
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = btn.getAttribute('data-target');
+                    navigateTo(targetId);
+                });
+            });
+
+            // Handle Contact Form Submit (Prevent default for mockup)
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    // Visual feedback
+                    const submitBtn = contactForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.textContent;
+                    
+                    submitBtn.textContent = 'Message Sent!';
+                    submitBtn.classList.replace('bg-gray-100', 'bg-brand-accent1');
+                    submitBtn.classList.replace('text-brand-dark', 'text-white');
+                    
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.classList.replace('bg-brand-accent1', 'bg-gray-100');
+                        submitBtn.classList.replace('text-white', 'text-brand-dark');
+                        contactForm.reset();
+                    }, 3000);
+                });
+            }
+            
+            // Initialize mobile nav colors on load
+            if(window.innerWidth < 768) {
+                navButtons.forEach(btn => {
+                    if(btn.getAttribute('data-target') !== 'home') {
+                        btn.classList.add('text-gray-400');
+                    }
+                });
+            }
         });
     </script>
 </body>
