@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peak Beacom | Software, Hardware & Music</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#05080c',     
+                            card: '#0d131c',     
+                            border: '#1f2937',   
+                            accent1: '#10b981',  // Emerald Green
+                            accent2: '#3b82f6',  // Tech Blue
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(15px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #05080c;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #05080c; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+        /* SPA Section Handling */
+        .page-section {
+            display: none; 
+            flex-grow: 1;
+            padding-top: 8rem; 
+            padding-bottom: 5rem;
+            width: 100%;
+            min-height: 100vh;
+        }
+        .page-section.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Ambient Glow */
+        .glow {
+            position: fixed;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(59,130,246,0.03) 0%, rgba(5,8,12,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            top: -10%; left: -10%;
+        }
+        .glow-alt {
+            position: fixed;
+            width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(16,185,129,0.03) 0%, rgba(5,8,12,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            bottom: -10%; right: -10%;
+        }
+    </style>
+</head>
+<body class="antialiased relative selection:bg-brand-accent2 selection:text-white">
+
+    <div class="glow"></div>
+    <div class="glow-alt"></div>
+
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-xl bg-brand-dark/85 border-b border-brand-border">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <button data-target="home" class="nav-btn text-2xl font-extrabold tracking-tighter outline-none hover:opacity-80 transition-opacity">
+                        PEAK<span class="text-brand-accent2">BEACOM</span>
+                    </button>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <button data-target="home" class="nav-btn active-nav text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-semibold transition-all outline-none border-b-2 border-transparent">Home</button>
+                        <button data-target="software" class="nav-btn text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-semibold transition-all outline-none border-b-2 border-transparent">Software</button>
+                        <button data-target="hardware" class="nav-btn text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-semibold transition-all outline-none border-b-2 border-transparent">Hardware</button>
+                        <button data-target="music" class="nav-btn text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-semibold transition-all outline-none border-b-2 border-transparent">Music</button>
+                        <button data-target="leadership" class="nav-btn text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-semibold transition-all outline-none border-b-2 border-transparent">Leadership</button>
+                        <button data-target="contact" class="nav-btn text-brand-dark bg-white hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition-all outline-none ml-2">Contact</button>
+                    </div>
+                </div>
+
+                <div class="md:hidden flex space-x-4 overflow-x-auto text-sm font-medium pb-1 hide-scrollbar -mx-2 px-2 w-full justify-end">
+                     <button data-target="home" class="nav-btn text-gray-300 whitespace-nowrap">Home</button>
+                     <button data-target="software" class="nav-btn text-gray-400 whitespace-nowrap">Software</button>
+                     <button data-target="hardware" class="nav-btn text-gray-400 whitespace-nowrap">Hardware</button>
+                     <button data-target="music" class="nav-btn text-gray-400 whitespace-nowrap">Music</button>
+                     <button data-target="leadership" class="nav-btn text-gray-400 whitespace-nowrap">Leadership</button>
+                     <button data-target="contact" class="nav-btn text-brand-accent2 whitespace-nowrap">Contact</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col w-full relative z-10">
+        
+        <section id="home" class="page-section active animate-fade-in items-center justify-center">
+            <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+                <div class="inline-block mb-4 px-4 py-1.5 rounded-full border border-brand-accent2/30 bg-brand-accent2/10 text-brand-accent2 text-sm font-bold tracking-widest uppercase">
+                    Innovator & Creator
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6 leading-tight">
+                    Engineering <br/>
+                    <span class="text-white">The Future.</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-400 font-medium mb-12 max-w-2xl mx-auto flex items-center justify-center flex-wrap gap-3">
+                    <span>Software</span>
+                    <span class="text-brand-accent2 text-opacity-50">•</span>
+                    <span>Hardware</span>
+                    <span class="text-brand-accent1 text-opacity-50">•</span>
+                    <span>Music</span>
+                </p>
+                
+                <div class="bg-brand-card/80 border border-brand-border rounded-3xl p-8 md:p-12 shadow-2xl backdrop-blur-md mb-12 transform hover:scale-[1.01] transition-transform duration-500 text-left">
+                    <h3 class="text-2xl font-bold mb-4 text-white">Purpose & Vision</h3>
+                    <div class="h-1 w-16 bg-brand-accent2 mb-6 rounded-full"></div>
+                    <p class="text-gray-300 leading-relaxed text-lg md:text-xl font-light mb-4">
+                        "To engineer innovative solutions and create compelling experiences by fusing software development, custom hardware circuitry, and musical performance."
+                    </p>
+                    <p class="text-gray-400 leading-relaxed">
+                        Grounded in the entrepreneurial principles of VALE, I approach every discipline—whether writing scalable code, wiring microcontrollers, or performing on stage—with a builder's mindset. I thrive at the intersection of logical problem-solving and creative execution.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="software" class="page-section animate-fade-in">
+            <div class="max-w-6xl mx-auto px-6 lg:px-8 w-full">
+                <div class="mb-12">
+                    <h2 class="text-brand-accent2 font-bold tracking-widest uppercase text-sm mb-2">Digital Architecture</h2>
+                    <h3 class="text-4xl md:text-5xl font-extrabold text-white">Software Engineering</h3>
+                    <div class="h-1 w-20 bg-brand-accent2 mt-6 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Meany Chess -->
+                    <div class="bg-brand-card border border-brand-border p-8 md:p-10 rounded-3xl hover:border-brand-accent2/50 transition-colors duration-300">
+                        <div class="w-14 h-14 bg-brand-accent2/10 rounded-xl flex items-center justify-center border border-brand-accent2/20 text-brand-accent2 mb-6">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-white">Meany Chess</h4>
+                        <p class="text-gray-300 mb-6 leading-relaxed">
+                            Architected and developed a full-scale chess web application, focusing heavily on robust backend architecture, game state persistence, and complex system logic.
+                        </p>
+                        <ul class="space-y-3 text-gray-400 mb-8 text-sm">
+                            <li class="flex items-start">
+                                <span class="text-brand-accent2 mr-2 mt-0.5">▹</span>
+                                Engineered secure account verification and user authentication flows.
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-brand-accent2 mr-2 mt-0.5">▹</span>
+                                Designed complex backend logic to govern piece movement, rules tracking, and live match data.
+                            </li>
+                        </ul>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="px-3 py-1 text-xs font-semibold bg-gray-800 text-gray-200 rounded-md">Web App</span>
+                            <span class="px-3 py-1 text-xs font-semibold bg-gray-800 text-gray-200 rounded-md">Auth</span>
+                            <span class="px-3 py-1 text-xs font-semibold bg-gray-800 text-gray-200 rounded-md">Backend Logic</span>
+                        </div>
+                    </div>
+
+                    <!-- Unity Game Dev -->
+                    <div class="bg-brand-card border border-brand-border p-8 md:p-10 rounded-3xl hover:border-purple-500/50 transition-colors duration-300">
+                        <div class="w-14 h-14 bg-purple-500/10 rounded-xl flex items-center justify-center border border-purple-500/20 text-purple-400 mb-6">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-white">Unity Game Development</h4>
+                        <p class="text-gray-300 mb-6 leading-relaxed">
+                            Applied object-oriented programming principles within the Unity engine to develop interactive gaming experiences, managing physics, collision detection, and complex user inputs.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="px-3 py-1 text-xs font-semibold bg-gray-800 text-gray-200 rounded-md">C#</span>
+                            <span class="px-3 py-1 text-xs font-semibold bg-gray-800 text-gray-200 rounded-md">Unity 3D/2D</span>
+                            <span class="px-3 py-1 text-xs font-semibold bg-gray-800 text-gray-200 rounded-md">Game Loops</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-card border border-brand-border p-8 md:p-10 rounded-3xl hover:border-brand-accent1/50 transition-colors duration-300 lg:col-span-2 flex flex-col md:flex-row gap-8 items-center">
+                        <div class="flex-grow">
+                            <h4 class="text-2xl font-bold mb-3 text-white">Python Scripting & Full-Stack Web</h4>
+                            <p class="text-gray-300 mb-4 leading-relaxed">
+                                Highly proficient in Python for writing utility scripts, mathematical algorithms, and process automation. In parallel, experienced in front-end web development to build responsive, modern, and accessible user interfaces.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-3 md:max-w-xs">
+                            <span class="px-4 py-2 text-sm font-semibold border border-brand-border bg-gray-900 text-gray-200 rounded-lg">Python</span>
+                            <span class="px-4 py-2 text-sm font-semibold border border-brand-border bg-gray-900 text-gray-200 rounded-lg">HTML5 / CSS3</span>
+                            <span class="px-4 py-2 text-sm font-semibold border border-brand-border bg-gray-900 text-gray-200 rounded-lg">JavaScript</span>
+                            <span class="px-4 py-2 text-sm font-semibold border border-brand-border bg-gray-900 text-gray-200 rounded-lg">Automation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hardware" class="page-section animate-fade-in">
+            <div class="max-w-6xl mx-auto px-6 lg:px-8 w-full">
+                <div class="mb-12">
+                    <h2 class="text-brand-accent1 font-bold tracking-widest uppercase text-sm mb-2">Physical Computing</h2>
+                    <h3 class="text-4xl md:text-5xl font-extrabold text-white">Hardware & 3D Design</h3>
+                    <div class="h-1 w-20 bg-brand-accent1 mt-6 rounded-full"></div>
+                </div>
+
+                <div class="space-y-8">
+                    <!-- Engineering Cert -->
+                    <div class="bg-brand-card border border-brand-border p-8 md:p-10 rounded-3xl flex flex-col md:flex-row gap-8 items-center relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-32 h-32 bg-brand-accent1/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                        <div class="w-16 h-16 flex-shrink-0 bg-brand-accent1/10 rounded-xl flex items-center justify-center border border-brand-accent1/30 text-brand-accent1">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-bold mb-3 text-white">Engineering Certification Program</h4>
+                            <p class="text-gray-300 leading-relaxed">
+                                Completed an intensive, hands-on certification path validating expertise in physical engineering principles. This encompassed rigorous training in custom circuitry design, electronic troubleshooting, and translating theoretical specifications into functional, built hardware.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- AutaWata -->
+                        <div class="bg-brand-card border border-brand-border p-8 rounded-3xl hover:border-gray-500 transition-colors duration-300">
+                            <h4 class="text-2xl font-bold mb-3 text-white">AutaWata System</h4>
+                            <div class="inline-block px-3 py-1 rounded bg-blue-500/10 text-blue-400 text-xs font-bold uppercase tracking-wider mb-4 border border-blue-500/20">Arduino Integration</div>
+                            <p class="text-gray-300 mb-4 leading-relaxed text-sm">
+                                Engineered a fully automated plant watering system by wiring and programming Arduino microcontrollers. Integrated environmental sensors to dynamically measure moisture levels and actuate water pumps autonomously.
+                            </p>
+                            <p class="text-gray-500 text-xs font-semibold uppercase">Showcased at Regional STEM</p>
+                        </div>
+
+                        <div class="bg-brand-card border border-brand-border p-8 rounded-3xl hover:border-gray-500 transition-colors duration-300">
+                            <h4 class="text-2xl font-bold mb-3 text-white">Parametric 3D Design</h4>
+                            <div class="inline-block px-3 py-1 rounded bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-wider mb-4 border border-orange-500/20">OpenSCAD & Fabrication</div>
+                            <p class="text-gray-300 leading-relaxed text-sm">
+                                Utilized code-based parametric modeling (OpenSCAD) to engineer high-precision, structural parts. Designed and 3D printed custom modular tool storage systems and specific hardware enclosures to interface perfectly with custom circuitry.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="music" class="page-section animate-fade-in">
+            <div class="max-w-6xl mx-auto px-6 lg:px-8 w-full">
+                <div class="mb-12 md:flex justify-between items-end">
+                    <div>
+                        <h2 class="text-red-500 font-bold tracking-widest uppercase text-sm mb-2">Creative Execution</h2>
+                        <h3 class="text-4xl md:text-5xl font-extrabold text-white">Music Production</h3>
+                        <div class="h-1 w-20 bg-red-500 mt-6 rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Band Profile -->
+                    <div class="bg-brand-card border border-brand-border p-8 md:p-10 rounded-3xl lg:col-span-2">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 border border-red-500/30">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-3xl font-bold text-white">Unbroken</h4>
+                                <p class="text-red-400 font-medium">Lead Guitarist & Backing Vocalist</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 leading-relaxed mb-8 text-lg">
+                            Active performer, songwriter, and musician. Bringing the same discipline required for writing code into the rehearsal room—collaborating with bandmates to arrange compositions, structure live performances, and dial in complex guitar tones.
+                        </p>
+                        
+                        <h5 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Multi-Instrumentalist</h5>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2 bg-gray-900 border border-gray-800 text-gray-300 rounded-lg text-sm font-medium">Electric Guitar</span>
+                            <span class="px-4 py-2 bg-gray-900 border border-gray-800 text-gray-300 rounded-lg text-sm font-medium">Acoustic Guitar</span>
+                            <span class="px-4 py-2 bg-gray-900 border border-gray-800 text-gray-300 rounded-lg text-sm font-medium">Classical Guitar</span>
+                            <span class="px-4 py-2 bg-gray-900 border border-gray-800 text-gray-300 rounded-lg text-sm font-medium">Piano</span>
+                        </div>
+                    </div>
+
+                    <!-- Spotify Embed -->
+                    <div class="bg-brand-card border border-brand-border p-8 rounded-3xl flex flex-col items-center justify-center text-center">
+                        <div class="w-20 h-20 bg-brand-dark rounded-full flex items-center justify-center mb-6 shadow-xl border border-gray-800">
+                            <svg class="w-10 h-10 text-brand-accent1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.24 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15.001 10.62 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.6.18-1.2.72-1.38 4.2-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.539-1.56.299z"/></svg>
+                        </div>
+                        <h5 class="text-xl font-bold text-white mb-2">Spotify Artist Profile</h5>
+                        <p class="text-gray-400 text-sm mb-6">Upcoming releases from Unbroken and solo acoustic works.</p>
+                        
+                        <div class="w-full bg-brand-dark border border-gray-800 rounded-xl p-4 flex items-center justify-center h-24">
+                            <span class="text-gray-500 text-xs uppercase tracking-widest font-semibold">Player Inbound</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="leadership" class="page-section animate-fade-in">
+            <div class="max-w-5xl mx-auto px-6 lg:px-8 w-full">
+                <div class="text-center mb-12">
+                    <h2 class="text-brand-accent2 font-bold tracking-widest uppercase text-sm mb-2">Giving Back</h2>
+                    <h3 class="text-4xl md:text-5xl font-extrabold text-white mb-6">Leadership & Community</h3>
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                        Applying technical knowledge and an entrepreneurial mindset to mentor the next generation and serve the community.
+                    </p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Code Ninjas -->
+                    <div class="bg-brand-card border border-brand-border p-8 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center">
+                        <div class="mb-4 md:mb-0 md:pr-8">
+                            <h4 class="text-2xl font-bold text-white mb-2">Code Ninjas Mentorship</h4>
+                            <p class="text-gray-300 text-sm leading-relaxed">
+                                Mentored young students through foundational programming logic and game development. Simplified complex STEM concepts to foster an engaging, highly collaborative learning environment.
+                            </p>
+                        </div>
+                        <div class="flex-shrink-0 bg-brand-dark border border-brand-border rounded-2xl px-6 py-4 text-center min-w-[140px]">
+                            <span class="block text-4xl font-extrabold text-brand-accent2">201</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Volunteer Hours</span>
+                        </div>
+                    </div>
+
+                    <!-- YMSL -->
+                    <div class="bg-brand-card border border-brand-border p-8 rounded-3xl">
+                        <h4 class="text-2xl font-bold text-white mb-2">Young Men's Service League (YMSL)</h4>
+                        <p class="text-gray-400 font-medium mb-4 text-sm uppercase tracking-wide">Community Service Member</p>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Actively participated in comprehensive philanthropic efforts, developing civic responsibility and leadership skills by consistently serving local charities and community organizations.
+                        </p>
+                    </div>
+
+                    <!-- VALE -->
+                    <div class="bg-gradient-to-r from-brand-card to-brand-dark border border-brand-border p-8 rounded-3xl relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-1/2 h-full bg-brand-accent1/5 transform skew-x-12 translate-x-1/4"></div>
+                        <h4 class="text-2xl font-bold text-white mb-2 relative z-10">VALE Entrepreneurial Principles</h4>
+                        <p class="text-gray-300 text-sm leading-relaxed relative z-10 max-w-2xl">
+                            My approach to all projects is deeply rooted in the Venture Academy of Leadership and Entrepreneurship. This mindset emphasizes proactive initiative, strategic project management, and transforming abstract ideas into concrete, functional realities.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="page-section animate-fade-in items-center justify-center">
+            <div class="max-w-3xl mx-auto px-6 lg:px-8 w-full text-center">
+                <div class="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center mb-8 shadow-lg shadow-white/10">
+                    <svg class="w-10 h-10 text-brand-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+                
+                <h2 class="text-5xl font-extrabold text-white mb-6">Let's Build Something.</h2>
+                <p class="text-xl text-gray-400 mb-12">
+                    Currently open for opportunities in software development, hardware engineering, and technical collaboration.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+                    <a href="mailto:beacompeak@gmail.com" class="w-full sm:w-auto px-8 py-4 bg-white text-brand-dark font-bold rounded-full hover:bg-gray-200 transition-colors flex items-center justify-center">
+                        beacompeak@gmail.com
+                    </a>
+                    <a href="https://peakbeac.github.io/aboutMe" target="_blank" class="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-brand-border text-white font-bold rounded-full hover:border-gray-500 transition-colors flex items-center justify-center">
+                        peakbeac.github.io/aboutMe
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.page-section');
+
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetId = btn.getAttribute('data-target');
+                    if(!targetId) return;
+
+                    // Update active state on navigation (Desktop)
+                    navBtns.forEach(b => {
+                        if(b.classList.contains('active-nav')) {
+                            b.classList.remove('active-nav', 'border-brand-accent2', 'text-white');
+                            b.classList.add('border-transparent');
+                        }
+                    });
+
+                    // Add active styling to clicked button (if it's a standard text link)
+                    if(!btn.classList.contains('bg-white')) {
+                        btn.classList.add('active-nav', 'border-brand-accent2', 'text-white');
+                        btn.classList.remove('border-transparent');
+                    }
+
+                    // Hide all sections
+                    sections.forEach(sec => {
+                        sec.classList.remove('active');
+                    });
+
+                    // Show target section and scroll to top
+                    const targetSec = document.getElementById(targetId);
+                    if(targetSec) {
+                        targetSec.classList.add('active');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
